@@ -186,7 +186,7 @@ updated_at      timestampz    now()
 ```
 const CUSTOMER_NEEDS_PROMPT = `
 You are an AI responsible for accurate market research analysis.
-Given a structured company knowledge base as a JSON, infer what the primary customer needs are and what needs that this company solves for customers.
+Given a structured company knowledge base as a JSON, infer what the primary customer needs are and what needs that this company solves for customers as specified in the output format below.
 USE ONLY THE DATA PROVIDED. DO NOT INVENT ANY OUTSIDE INFORMATION.
 Prioritize finding:
 - Problems that customers are trying to solve
@@ -197,7 +197,7 @@ Return a JSON array of the customer's needs ranked by importance.
 
 INPUT: {{knowledge_base_json}}
 OUTPUT: {
-  "customerNeeds"L [
+  "customerNeeds": [
     {"need": string, "priority": "high | medium | low", "evidence": "string"}
   ]
 }
@@ -210,7 +210,7 @@ OUTPUT: {
 ```
 const IDEAL_CUSTOMER_PROMPT = `
 You are an AI responsible for accurate market research analysis.
-Given a structured company knowledge base as a JSON, identify the most likely target buyers or customer. Then separate the buyers/customers into categories.
+Given a structured company knowledge base as a JSON, identify the most ideal buyers or customer. Then separate the buyers/customers into categories as specified in the output format below.
 USE ONLY THE DATA PROVIDED. DO NOT INVENT ANY OUTSIDE INFORMATION.
 Prioritize finding:
 - Customer type
@@ -240,7 +240,7 @@ OUTPUT: {
 ```
 const TARGET_BUYERS_PROMPT = `
 You are an AI responsible for accurate market research analysis.
-Given a structured company knowledge base as a JSON, identify the most likely customers. Then separate the customers into categories sorted by most likely to least likely.
+Given a structured company knowledge base as a JSON, identify the most likely target buyers or customers. Then separate the customers into categories as specified in the output format below.
 USE ONLY THE DATA PROVIDED. DO NOT INVENT ANY OUTSIDE INFORMATION.
 Prioritize finding:
 - Buyer type

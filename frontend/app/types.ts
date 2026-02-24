@@ -53,6 +53,14 @@ export type KnowledgeBase = {
     pricing: string[]
     offeringTypes: string
   }
+  extras: {
+    email: string
+    phone: string
+    trustSignals: string[]
+    faqs: string[]
+    testimonials: string[]
+    usps: string[]
+  }
 }
 
 export type KnowledgeBaseRow = {

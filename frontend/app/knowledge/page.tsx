@@ -226,6 +226,21 @@ export default function Knowledge() {
               <Field editMode={editMode} onChange={(val) => setData({ ...data!, offerings: { ...data!.offerings, pricing: val.split(', ') } })}
                 label="Pricing" value={data?.offerings?.pricing?.join(', ')} />
             </Section>
+
+            <Section title="Extras">
+              <Field editMode={editMode} onChange={(val) => setData({ ...data!, extras: { ...data!.extras, email: val } })}
+                label="Email" value={data?.extras?.email} />
+              <Field editMode={editMode} onChange={(val) => setData({ ...data!, extras: { ...data!.extras, phone: val } })}
+                label="Phone" value={data?.extras?.phone} />
+              <Field editMode={false}
+                label="Trust Signals" value={data?.extras?.trustSignals?.join(', ')} />
+              <Field editMode={false}
+                label="Testimonials" value={data?.extras?.testimonials?.join(' | ')?.slice(0, 200)} />
+              <Field editMode={false}
+                label="USPs" value={data?.extras?.usps?.join(', ')} />
+              <Field editMode={false}
+                label="FAQs" value={data?.extras?.faqs?.join(' | ')?.slice(0, 200)} />
+            </Section>
           </div>
         </div>
       )}

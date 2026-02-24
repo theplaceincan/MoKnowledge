@@ -242,6 +242,14 @@ export default function KnowledgeView() {
                       <Field label="Types" value={selected.data?.offerings?.offeringTypes} />
                       <Field label="Pricing" value={selected.data?.offerings?.pricing?.join(', ')} />
                     </Section>
+
+                    <Section title="Extras">
+                      <Field label="Email" value={selected.data?.extras?.email} />
+                      <Field label="Phone" value={selected.data?.extras?.phone} />
+                      <Field label="Trust Signals" value={selected.data?.extras?.trustSignals?.join(', ')} />
+                      <Field label="Testimonials" value={selected.data?.extras?.testimonials?.slice(0, 2).join(' | ')} />
+                      <Field label="USPs" value={selected.data?.extras?.usps?.join(', ')} />
+                    </Section>
                   </div>
                   <div className="mt-5">
                     {confirmDelete ? (

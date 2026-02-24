@@ -1,0 +1,43 @@
+1. What approach did you take to scraping and structuring the knowledge base data?
+
+I used Cheerio to scrap a given valid and existing URL, which returned 
+the websites data as a JSON. Each variable in a new JSON is filled by using regex on
+common words and symbols relating to each variable of the original data JSON. Afterwards,
+the new JSON is returned as the knowledge base data.
+
+----------
+
+2. What information beyond our current baseline did you choose to include, and why?
+
+I chose to include email, phone, trust signals, testimonials, and USPs. I did this because
+these pieces of information help MoSocial, MoBlogs, and MoMail with better understanding the company,
+as it now has access to more common methods of company communication, testimonials and trust signals of what customers
+thought of the company's services, and USPs that helps MoMail, MoBlogs, and MoSocial understand what 
+helps make the company stand out.
+
+----------
+
+3. How would your knowledge base design improve the outputs of MoSocial, MoMail, and MoBlogs specifically?
+
+For MoSocial (and MoMail), my knowledge base design helps with identifying the kinds of customers that companies
+look for, as well as their existing social media presence. This also helps MoMail when generating better outbound emails
+and newsletters based on customer needs.
+
+For MoBlogs, my knowledge base helps improve the outputs of MoBlogs specifically by helping AI understand 
+sufficient enough context of a business to generate accurate and relevant case studies, articles, blogs, etc.
+
+----------
+
+4. What would you improve or change about MoKnowledge if you had more time?
+
+If I had more time, I would improve on the scraping functionality to handle websites that were built by popular
+web builders, such as Wix, Squarespace, and Wordpress. Many businesses use these web builders, and each of these
+web builders have their own unique ways of organzing and displaying data that can be difficult to meaningfully scrape with 
+a simple raw HTML scraper.
+
+----------
+
+5. What was the most challenging part of this assignment?
+
+The most challening part of this assignment was knowing what to scrape to get as much needed info as possible, especially
+with creating regex expressions and debugging JSON errors.

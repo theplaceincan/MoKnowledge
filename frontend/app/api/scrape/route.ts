@@ -40,6 +40,7 @@ export async function POST(request: Request) {
 
   const html = await res.text();
   const $ = cheerio.load(html)
+  $('style, script, noscript').remove()
 
   // -- Company Foundation
   // Name
@@ -175,6 +176,26 @@ export async function POST(request: Request) {
   // Categorization of offering types
   const offeringTypes = html.match(/(?:consulting|software|services|products|courses|coaching|design|development|marketing)[^<]*/gi)?.[0] || ''
 
+  // -- Extras
+  const email = html.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/)?.[0] || ''
+  const phone = html.match(/(?:\+1[\s.-]?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/)?.[0] || ''
+  const trustSignals = html.match(/(?:certified|award|accredited|member of|licensed|insured|BBB|ISO)[^<]{0,100}/gi)?.slice(0, 5) || []
+  const faqs: string[] = []
+  $('[class*="faq"], [class*="accordion"]').each((_, el) => {
+    const text = $(el).text().replace(/\s+/g, ' ').trim()
+    if (text) faqs.push(text.slice(0, 300))
+  })
+  const testimonials: string[] = []
+  $('[class*="testimonial"], [class*="review"], [class*="quote"]').each((_, el) => {
+    const text = $(el).text().replace(/\s+/g, ' ').trim()
+    if (text.length > 20 && text.length < 500) testimonials.push(text)
+  })
+  const usps: string[] = []
+  $('[class*="why"], [class*="difference"], [class*="unique"], [class*="advantage"]').each((_, el) => {
+    const text = $(el).text().replace(/\s+/g, ' ').trim()
+    if (text.length > 10 && text.length < 200) usps.push(text)
+  })
+
 
   return Response.json({
     companyFoundation: {
@@ -193,6 +214,7 @@ export async function POST(request: Request) {
     },
     onlinePresence: { linkedin, instagram, x, twitter, facebook, tiktok, youtube },
     keyPeople: { people: keyPeople, descriptions: keyPeopleDescriptions },
-    offerings: { list: [...new Set(offerings)].slice(0, 10), features, pricing: uniquePricing, offeringTypes }
+    offerings: { list: [...new Set(offerings)].slice(0, 10), features, pricing: uniquePricing, offeringTypes },
+    extras: { email, phone, trustSignals, faqs, testimonials, usps }
   })
 }
