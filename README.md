@@ -154,7 +154,7 @@ The key features and functionality of MoKnowledge include:
 - Knowledge Base dashboard view with filtering, sorting, and search
 - URL HTML web scraper with Cheerio
 - Edit and save functionalities for knowledge bases
-- Integration to Supabase for storing website data
+- Integration to Supabase for storing website data with RLS
 
 ---
 
