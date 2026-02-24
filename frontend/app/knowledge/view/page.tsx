@@ -180,11 +180,11 @@ export default function KnowledgeView() {
               <p className="mt-5 w-full max-w-250 text-xs text-zinc-500">
                 Filtering by: <span className="font-medium">{activeFilter}</span>
                 <button
-    onClick={() => setActiveFilter(null)}
-    className="text-sm p-1 px-3 ml-2 rounded-xl bg-red-50 text-red-500 cursor-pointer"
-  >
-    X
-  </button>
+                  onClick={() => setActiveFilter(null)}
+                  className="text-sm p-1 px-3 ml-2 rounded-xl bg-red-50 text-red-500 cursor-pointer"
+                >
+                  X
+                </button>
               </p>
             </div>
           </div>
