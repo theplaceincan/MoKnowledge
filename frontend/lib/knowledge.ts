@@ -5,11 +5,11 @@ export async function getKnowledgeData() {
   return data;
 }
 
-export async function doesUrlExist(url: string) {
-  const { data } = await supabase.from("knowledge_base").select("id").eq("website_url", url).maybeSingle()
-  console.log(data)
+// export async function doesUrlExist(url: string) {
+//   const { data } = await supabase.from("knowledge_base").select("id").eq("website_url", url).maybeSingle()
+//   console.log(data)
 
-  if (data) {
-    return true
-  } else return false;
-}
+//   if (data) {
+//     return true
+//   } else return false;
+// }

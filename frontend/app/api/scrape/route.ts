@@ -1,20 +1,42 @@
 import * as cheerio from 'cheerio'
 import { NextRequest } from 'next/server'
-import { doesUrlExist } from '@/lib/knowledge';
+// import { doesUrlExist } from '@/lib/knowledge';
+import { supabase } from '@/lib/supabase';
+
+// Validation helper functions
+function isValidUrl(urlString: string): boolean {
+  try {
+    const url = new URL(urlString);
+    // return true;
+    return url.hostname.includes('.')
+  } catch (error) {
+    return false;
+  }
+}
 
 export async function POST(request: Request) {
-  const { url } = await request.json()
-  
+  // Remove spaces, get url
+  const { url: rawUrl } = await request.json()
+  const url = rawUrl?.trim()
+
   // Error handling and form validation
-  if (!url) return Response.json({ error: "No URL was found" }, { status: 400 });
   const fullUrl = url.startsWith('http') ? url : `https://${url}`
-  const normalizedUrl = fullUrl.replace(/\/$/, '')
-  if (await doesUrlExist(normalizedUrl)) return Response.json({ error: "URL already exists" }, { status: 409 });
+  const normalizedUrl = fullUrl.endsWith('/') ? fullUrl : fullUrl + '/'
+  if (!isValidUrl(normalizedUrl)) return Response.json({ error: "Input is not a url" }, { status: 400 });
+  if (!normalizedUrl) return Response.json({ error: "No URL was found" }, { status: 400 });
+  const { data: existing } = await supabase.from('knowledge_base').select('id').eq('website_url', normalizedUrl).maybeSingle()
+  if (existing) return Response.json({ error: "URL already exists" }, { status: 409 })
 
   // Scraping the website
   const res = await fetch(normalizedUrl, {
     headers: { 'User-Agent': 'Mozilla/5.0' }
   })
+  if (!res.ok) {
+    return Response.json(
+      { error: `Failed to fetch site (status ${res.status})` },
+      { status: 400 }
+    );
+  }
 
   const html = await res.text();
   const $ = cheerio.load(html)

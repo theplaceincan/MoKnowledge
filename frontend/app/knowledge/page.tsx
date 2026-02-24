@@ -43,8 +43,17 @@ export default function Knowledge() {
   const [scraped, isScraped] = useState(false);
   const [data, setData] = useState<KnowledgeBase | null>(null);
 
+  const [errorMsg, setErrorMsg] = useState("")
+  const [error, setError] = useState(false)
+
+  function handleDisplayError(errorMsg: string) {
+    setError(true)
+    setErrorMsg(errorMsg)
+  }
+
   // scrape
   const scrape = async () => {
+    setError(false)
     setCompletedSave(false)
     isScraped(false)
     setLoadingData(true)
@@ -54,9 +63,21 @@ export default function Knowledge() {
       body: JSON.stringify({ url })
     })
     // error handling
+    if (!url.trim()) {
+      handleDisplayError("Please enter a website URL");
+      return;
+    }
     if (!res.ok) {
-      const error = await res.json();
-      alert(error.error)
+      const errData = await res.text();
+      let msg = `Failed (status ${res.status})`;
+
+      try {
+        const data = JSON.parse(errData);
+        msg = data?.error || msg;
+      } catch {
+        if (errData) msg = errData.slice(0, 200);
+      }
+      handleDisplayError(msg)
       setLoadingData(false)
       return
     }
@@ -84,38 +105,44 @@ export default function Knowledge() {
     setEditMode(false);
   }
 
-
   return (
     <div className="p-5">
       <div className="flex justify-center items-center">
         <div className="w-full max-w-200 space-y-4">
-          <p className="font-semibold text-zinc-500 text-left w-full">Enter website to generate knowledge data</p>
-          <input onChange={(e) => setUrl(e.target.value)} className="w-full max-w-200 px-4 py-3 border border-(--brand-blue) border-solid rounded-xl text-zinc-700 bg-transparent transition-colors focus:border-(--brand-blue-light) focus:outline-none" />
-          <button onClick={scrape} className="w-full max-w-200 cursor-pointer p-3 rounded-2xl bg-blue-600 hover:bg-blue-700 border-2 border-transparent active:border-blue-400 font-semibold text-white">
+          <p className="font-semibold text-zinc-600 text-left w-full">Enter website to generate knowledge data</p>
+          <input onChange={(e) => setUrl(e.target.value)} className="w-full max-w-200 px-4 py-2 border border-(--brand-blue) border-solid rounded-xl text-zinc-700 bg-transparent transition-colors focus:border-(--brand-blue-light) focus:outline-none" />
+
+          {error && (
+            <p className="bg-red-50 text-red-500 text-center p-2 px-2 rounded-xl">Error: {errorMsg}</p>
+          )}
+
+          <button onClick={scrape} className="w-full max-w-200 cursor-pointer p-2 shadow-md rounded-2xl border-blue-600 bg-blue-600 hover:bg-blue-700 border-2 active:border-blue-400 font-semibold text-white">
             {loadingData == true ? (
-              <p>Loading...</p>
+              <p>Scraping website… this may take up to 10 seconds</p>
             ) : (
               <p>Get Data</p>
             )}
           </button>
           {/* href={'/knowledge/view'} */}
           {scraped && data && completedSave == false && (
-            <button onClick={() => runSaveKnowledge(data)} className="w-full max-w-200 cursor-pointer p-3 rounded-2xl bg-white text-blue-600 hover:bg-blue-100 border-2 border-blue-600 active:border-blue-400 font-semibold">
+            <button onClick={() => runSaveKnowledge(data)} className="w-full max-w-200 cursor-pointer p-2 shadow-md rounded-2xl border-blue-600 hover:bg-blue-100 border-2 active:border-blue-200 font-semibold text-blue-600">
               {loadingSave == true ? (
-                <p>Loading...</p>
+                <p>Saving knowledge base...</p>
               ) : (
                 <p>Save to Knowledge Base</p>
               )}
             </button>
           )}
           {scraped && data && completedSave && (
-            <button onClick={() => runSaveKnowledge(data)} className="pointer-events-none w-full max-w-200 cursor-pointer p-3 rounded-2xl bg-white text-green-600 hover:bg-green-100 border-2 border-green-600 active:border-green-400 font-semibold">
+            <button onClick={() => runSaveKnowledge(data)} disabled={completedSave} className="w-full max-w-200 cursor-pointer p-2 shadow-md rounded-2xl border-green-600 hover:bg-green-100 border-2 active:border-green-200 font-semibold text-green-600">
               <p>Completed Save</p>
             </button>
           )}
-
         </div>
       </div>
+
+{/* onClick={() => navigator.clipboard.writeText(JSON.stringify(data, null, 2))} */}
+
 
       {/* Data Display */}
       {scraped && data && (
@@ -125,11 +152,11 @@ export default function Knowledge() {
             <div className="space-x-2">
               {editMode ? (
                 <>
-                  <button onClick={() => cancelEditMode()} className="max-w-200 cursor-pointer p-1 px-3 rounded-2xl bg-white text-red-600 hover:bg-red-100 border-2 border-red-600 active:border-red-400 font-semibold">Cancel</button>
-                  <button onClick={() => saveEditedData()} className="max-w-200 cursor-pointer p-1 px-3 rounded-2xl bg-white text-green-600 hover:bg-green-100 border-2 border-green-600 active:border-green-400 font-semibold">Save Data</button>
+                  <button onClick={() => cancelEditMode()} className="max-w-200 shadow-md cursor-pointer p-1 px-3 rounded-2xl bg-white text-red-600 hover:bg-red-100 border-2 border-red-600 active:border-red-400 font-semibold">Cancel</button>
+                  <button onClick={() => saveEditedData()} className="max-w-200 shadow-md cursor-pointer p-1 px-3 rounded-2xl bg-white text-green-600 hover:bg-green-100 border-2 border-green-600 active:border-green-400 font-semibold">Save Data</button>
                 </>
               ) : (
-                <button onClick={() => setEditMode(true)} className="max-w-200 cursor-pointer p-1 px-3 rounded-2xl bg-white text-gray-600 hover:bg-gray-100 border-2 border-gray-600 active:border-gray-400 font-semibold">Edit Data</button>
+                <button onClick={() => setEditMode(true)} className="max-w-200 shadow-md cursor-pointer p-1 px-3 rounded-2xl bg-white text-gray-600 hover:bg-gray-100 border-2 border-gray-600 active:border-gray-400 font-semibold">Edit Data</button>
               )}
             </div>
             <div>
@@ -185,7 +212,6 @@ export default function Knowledge() {
           </div>
         </div>
       )}
-
     </div >
   );
 }
