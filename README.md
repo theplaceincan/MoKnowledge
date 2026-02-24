@@ -265,3 +265,18 @@ OUTPUT: {
 ```
 ---
 # Any assumptions or limitations
+
+This project assumes that:
+- There's no authentication required
+- Websites are in English only, as they may return bad data
+- Websites are using regular and common HTML patterns, and aren't using web builders
+- Every URL is unique to a different company
+
+The limitations of this project are:
+- Websites that are built with web builders (ex. Wix) are not cleanly scraped
+- Websites that are JavaScript-rendered are not scraped
+- Fields such as ideal customer are difficult to scrape
+- Inline CSS is the only place where brand colors are scraped
+- Pricing data could return false positives due to regex pattern
+- Some fields like key people are scraped by using common and predictable words like team or staff
+- No other paths of the company website are scraped, only the main page ("/")
