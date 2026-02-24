@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { getKnowledgeData } from "@/lib/knowledge";
 import { KnowledgeBaseRow } from "@/app/types";
+import { supabase } from "@/lib/supabase";
 
 export default function KnowledgeView() {
   const [url, setUrl] = useState("");
@@ -18,6 +19,7 @@ export default function KnowledgeView() {
   type viewModes = "card" | "table" | "detail"
   const [viewMode, setViewMode] = useState<viewModes>("card")
   const [selected, setSelected] = useState<KnowledgeBaseRow | null>(null)
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   // Getting data
   useEffect(() => {
@@ -42,10 +44,11 @@ export default function KnowledgeView() {
 
   function Field({ label, value }: { label: string, value?: string }) {
     if (!value) return null
+    const shortened = value.length > 300 ? value.slice(0, 300) + "..." : value
     return (
       <div className="flex gap-2 text-sm">
         <span className="text-zinc-400 w-28 shrink-0">{label}</span>
-        <span className="text-zinc-700">{value}</span>
+        <span className="text-zinc-700">{shortened}</span>
       </div>
     )
   }
@@ -74,6 +77,19 @@ export default function KnowledgeView() {
   //     <p>{e.data.companyFoundation.description}</p>
   //   </div>
   // ))}
+
+  // Delete
+
+  async function deleteKnowledgeBase() {
+    if (!selected) return
+    setConfirmDelete(false)
+
+    await supabase.from('knowledge_base').delete().eq('id', selected.id)
+
+    setData(prev => prev.filter(row => row.id !== selected.id))
+    setSelected(null)
+    setViewMode("card")
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -188,45 +204,57 @@ export default function KnowledgeView() {
         {viewMode == "detail" && (
           <>
             {selected && (
-              <div className="w-full flex items-center justify-center">
-                <div className="w-full border max-w-325 border-zinc-200 rounded-2xl p-6 space-y-6">
-                  <div>
-                    <p className="text-2xl font-bold">{selected.data?.companyFoundation?.name}</p>
-                    <a target="_blank" href={selected.data?.companyFoundation?.websiteUrl} className="text-blue-500 text-sm">{selected.data?.companyFoundation?.websiteUrl}</a>
-                    <p className="text-zinc-500 mt-1">{selected.data?.companyFoundation?.description}</p>
+              <>
+                <div className="w-full mb-5 flex flex-col items-center justify-center">
+                  <div className="w-full border max-w-325 border-zinc-200 rounded-2xl p-6 space-y-6">
+                    <div>
+                      <p className="text-2xl font-bold">{selected.data?.companyFoundation?.name}</p>
+                      <a target="_blank" href={selected.data?.companyFoundation?.websiteUrl} className="text-blue-500 text-sm">{selected.data?.companyFoundation?.websiteUrl}</a>
+                      <p className="text-zinc-500 mt-1">{selected.data?.companyFoundation?.description}</p>
+                    </div>
+
+                    <Section title="Company Foundation">
+                      <Field label="Industry" value={selected.data?.companyFoundation?.industry} />
+                      <Field label="Business Model" value={selected.data?.companyFoundation?.businessModel} />
+                      <Field label="Founded" value={selected.data?.companyFoundation?.founded} />
+                      <Field label="Employees" value={selected.data?.companyFoundation?.employeeCount} />
+                      <Field label="Address" value={selected.data?.companyFoundation?.mainAddress} />
+                    </Section>
+
+                    <Section title="Positioning">
+                      <Field label="Pitch" value={selected.data?.positioning?.companyPitch} />
+                      <Field label="Story" value={selected.data?.positioning?.foundingStory} />
+                    </Section>
+
+                    <Section title="Branding">
+                      <Field label="Tone" value={selected.data?.brandingAndStyle?.tone?.join(', ')} />
+                      <Field label="Fonts" value={selected.data?.brandingAndStyle?.fonts?.join(', ')} />
+                      <Field label="Colors" value={selected.data?.brandingAndStyle?.brandColors?.join(', ')} />
+                    </Section>
+
+                    <Section title="Online Presence">
+                      <Field label="LinkedIn" value={selected.data?.onlinePresence?.linkedin} />
+                      <Field label="Instagram" value={selected.data?.onlinePresence?.instagram} />
+                      <Field label="Facebook" value={selected.data?.onlinePresence?.facebook} />
+                    </Section>
+
+                    <Section title="Offerings">
+                      <Field label="Types" value={selected.data?.offerings?.offeringTypes} />
+                      <Field label="Pricing" value={selected.data?.offerings?.pricing?.join(', ')} />
+                    </Section>
                   </div>
-
-                  <Section title="Company Foundation">
-                    <Field label="Industry" value={selected.data?.companyFoundation?.industry} />
-                    <Field label="Business Model" value={selected.data?.companyFoundation?.businessModel} />
-                    <Field label="Founded" value={selected.data?.companyFoundation?.founded} />
-                    <Field label="Employees" value={selected.data?.companyFoundation?.employeeCount} />
-                    <Field label="Address" value={selected.data?.companyFoundation?.mainAddress} />
-                  </Section>
-
-                  <Section title="Positioning">
-                    <Field label="Pitch" value={selected.data?.positioning?.companyPitch} />
-                    <Field label="Story" value={selected.data?.positioning?.foundingStory} />
-                  </Section>
-
-                  <Section title="Branding">
-                    <Field label="Tone" value={selected.data?.brandingAndStyle?.tone?.join(', ')} />
-                    <Field label="Fonts" value={selected.data?.brandingAndStyle?.fonts?.join(', ')} />
-                    <Field label="Colors" value={selected.data?.brandingAndStyle?.brandColors?.join(', ')} />
-                  </Section>
-
-                  <Section title="Online Presence">
-                    <Field label="LinkedIn" value={selected.data?.onlinePresence?.linkedin} />
-                    <Field label="Instagram" value={selected.data?.onlinePresence?.instagram} />
-                    <Field label="Facebook" value={selected.data?.onlinePresence?.facebook} />
-                  </Section>
-
-                  <Section title="Offerings">
-                    <Field label="Types" value={selected.data?.offerings?.offeringTypes} />
-                    <Field label="Pricing" value={selected.data?.offerings?.pricing?.join(', ')} />
-                  </Section>
+                  <div className="mt-5">
+                    {confirmDelete ? (
+                      <div className="space-x-3">
+                        <button onClick={() => deleteKnowledgeBase()} className="max-w-200 shadow-md cursor-pointer p-1 px-3 rounded-2xl bg-white text-red-600 hover:bg-blue-100 border-2 border-red-600 active:border-red-400 font-semibold">Confirm Deletion</button>
+                        <button onClick={() => setConfirmDelete(false)} className="max-w-200 shadow-md cursor-pointer p-1 px-3 rounded-2xl bg-white text-gray-600 hover:bg-blue-100 border-2 border-gray-600 active:border-gray-400 font-semibold">Cancel</button>
+                      </div>
+                    ) : (
+                      <button onClick={() => setConfirmDelete(true)} className="max-w-200 shadow-md cursor-pointer p-1 px-3 rounded-2xl bg-white text-red-600 hover:bg-blue-100 border-2 border-red-600 active:border-red-400 font-semibold">Delete Knowledge Base</button>
+                    )}
+                  </div>
                 </div>
-              </div>
+              </>
             )}
           </>
         )}
