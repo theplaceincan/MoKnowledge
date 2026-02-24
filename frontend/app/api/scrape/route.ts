@@ -78,9 +78,9 @@ export async function POST(request: Request) {
   // Target buyers
   const targetBuyers = html.match(/(?:for\s+)?(customers|users|small businesses|enterprises|startups|homeowners|restaurants|retailers|agencies|freelancers)[^<]*/gi)?.[0] || ''
   // Customer needs
-  const customerNeeds = ''
+  const customerNeeds = html.match(/(?:we (?:help|solve|serve)|for (?:small|large))[^<]*/gi)?.[0] || ''
   // Ideal customer persona
-  const customerPersona = ''
+  const customerPersona = html.match(/(?:for|ideal for|we serve|built for|designed for)\s+([a-zA-Z\s,&]+?)(?:\.|,|[?!])/i)?.[1]?.trim() || ''
   // Industry groupings
   const uniqueIndustries = [...new Set(html.match(/(?:retail|healthcare|finance|education|technology|hospitality|real estate|legal|marketing)/gi) || [])]
   // Industry outlook (if available)
@@ -106,8 +106,6 @@ export async function POST(request: Request) {
   const toneWords = ['professional', 'friendly', 'bold', 'innovative', 'trusted', 'expert', 'simple', 'powerful', 'passionate', 'creative']
   const text = $('body').text().replace(/\s+/g, ' ').trim()
   const toneStyle = toneWords.filter(w => text.toLowerCase().includes(w))
-  // Art style description
-  const artStyle = ''
   // Fonts
   const fonts: string[] = []
   $('link[href*="fonts.googleapis"]').each((_, el) => {
@@ -123,6 +121,13 @@ export async function POST(request: Request) {
     if (hex) colors.push(...hex)
   })
   const brandColors = [...new Set(colors)].slice(0, 10)
+  // Art style description
+  const hasSerif = fonts.some(f => f.toLowerCase().includes('serif'))
+  const isBright = brandColors.some(c => c.match(/#[89A-F][89A-F]/i))
+  const artStyle = [
+    hasSerif ? 'traditional' : 'modern',
+    isBright ? 'vibrant' : 'sophisticated'
+  ].join(', ') || 'contemporary'
   // Logos (URLs)
   const logo = $('meta[property="og:image"]').attr('content') || $('img[class*="logo"]').attr('src') || ''
 

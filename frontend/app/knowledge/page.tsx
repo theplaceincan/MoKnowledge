@@ -148,7 +148,7 @@ export default function Knowledge() {
         </div>
       </div>
 
-{/* onClick={() => navigator.clipboard.writeText(JSON.stringify(data, null, 2))} */}
+      {/* onClick={() => navigator.clipboard.writeText(JSON.stringify(data, null, 2))} */}
 
 
       {/* Data Display */}
@@ -168,7 +168,7 @@ export default function Knowledge() {
                 )}
               </div>
               <div>
-                { copiedJSON ? (
+                {copiedJSON ? (
                   <button className="max-w-200 shadow-md cursor-pointer p-1 px-3 rounded-2xl bg-white text-gray-600 hover:bg-gray-100 border-2 border-gray-600 active:border-gray-400 font-semibold">Copied JSON</button>
                 ) : (
                   <button onClick={() => copyJSON()} className="max-w-200 shadow-md cursor-pointer p-1 px-3 rounded-2xl bg-white text-blue-600 hover:bg-blue-100 border-2 border-blue-600 active:border-blue-400 font-semibold">Copy JSON</button>
@@ -185,45 +185,45 @@ export default function Knowledge() {
             <Section title="Company Foundation">
               <Field editMode={editMode} onChange={(val) => setData({ ...data!, companyFoundation: { ...data!.companyFoundation, industry: val } })}
                 label="Industry" value={data?.companyFoundation?.industry} />
-              <Field editMode={editMode} onChange={(val) => setData({ ...data!, companyFoundation: { ...data!.companyFoundation, industry: val } })}
+              <Field editMode={editMode} onChange={(val) => setData({ ...data!, companyFoundation: { ...data!.companyFoundation, businessModel: val } })}
                 label="Business Model" value={data?.companyFoundation?.businessModel} />
-              <Field editMode={editMode} onChange={(val) => setData({ ...data!, companyFoundation: { ...data!.companyFoundation, industry: val } })}
+              <Field editMode={editMode} onChange={(val) => setData({ ...data!, companyFoundation: { ...data!.companyFoundation, founded: val } })}
                 label="Founded" value={data?.companyFoundation?.founded} />
-              <Field editMode={editMode} onChange={(val) => setData({ ...data!, companyFoundation: { ...data!.companyFoundation, industry: val } })}
+              <Field editMode={editMode} onChange={(val) => setData({ ...data!, companyFoundation: { ...data!.companyFoundation, employeeCount: val } })}
                 label="Employees" value={data?.companyFoundation?.employeeCount} />
-              <Field editMode={editMode} onChange={(val) => setData({ ...data!, companyFoundation: { ...data!.companyFoundation, industry: val } })}
+              <Field editMode={editMode} onChange={(val) => setData({ ...data!, companyFoundation: { ...data!.companyFoundation, mainAddress: val } })}
                 label="Address" value={data?.companyFoundation?.mainAddress} />
             </Section>
 
             <Section title="Positioning">
-              <Field editMode={editMode} onChange={(val) => setData({ ...data!, companyFoundation: { ...data!.companyFoundation, industry: val } })}
+              <Field editMode={editMode} onChange={(val) => setData({ ...data!, positioning: { ...data!.positioning, companyPitch: val } })}
                 label="Pitch" value={data?.positioning?.companyPitch} />
-              <Field editMode={editMode} onChange={(val) => setData({ ...data!, companyFoundation: { ...data!.companyFoundation, industry: val } })}
+              <Field editMode={editMode} onChange={(val) => setData({ ...data!, positioning: { ...data!.positioning, foundingStory: val } })}
                 label="Story" value={data?.positioning?.foundingStory} />
             </Section>
 
             <Section title="Branding">
-              <Field editMode={editMode} onChange={(val) => setData({ ...data!, companyFoundation: { ...data!.companyFoundation, industry: val } })}
+              <Field editMode={editMode} onChange={(val) => setData({ ...data!, brandingAndStyle: { ...data!.brandingAndStyle, tone: val.split(', ') } })}
                 label="Tone" value={data?.brandingAndStyle?.tone?.join(', ')} />
-              <Field editMode={editMode} onChange={(val) => setData({ ...data!, companyFoundation: { ...data!.companyFoundation, industry: val } })}
+              <Field editMode={editMode} onChange={(val) => setData({ ...data!, brandingAndStyle: { ...data!.brandingAndStyle, fonts: val.split(', ') } })}
                 label="Fonts" value={data?.brandingAndStyle?.fonts?.join(', ')} />
-              <Field editMode={editMode} onChange={(val) => setData({ ...data!, companyFoundation: { ...data!.companyFoundation, industry: val } })}
+              <Field editMode={editMode} onChange={(val) => setData({ ...data!, brandingAndStyle: { ...data!.brandingAndStyle, brandColors: val.split(', ') } })}
                 label="Colors" value={data?.brandingAndStyle?.brandColors?.join(', ')} />
             </Section>
 
             <Section title="Online Presence">
-              <Field editMode={editMode} onChange={(val) => setData({ ...data!, companyFoundation: { ...data!.companyFoundation, industry: val } })}
+              <Field editMode={editMode} onChange={(val) => setData({ ...data!, onlinePresence: { ...data!.onlinePresence, linkedin: val } })}
                 label="LinkedIn" value={data?.onlinePresence?.linkedin} />
-              <Field editMode={editMode} onChange={(val) => setData({ ...data!, companyFoundation: { ...data!.companyFoundation, industry: val } })}
+              <Field editMode={editMode} onChange={(val) => setData({ ...data!, onlinePresence: { ...data!.onlinePresence, instagram: val } })}
                 label="Instagram" value={data?.onlinePresence?.instagram} />
-              <Field editMode={editMode} onChange={(val) => setData({ ...data!, companyFoundation: { ...data!.companyFoundation, industry: val } })}
+              <Field editMode={editMode} onChange={(val) => setData({ ...data!, onlinePresence: { ...data!.onlinePresence, facebook: val } })}
                 label="Facebook" value={data?.onlinePresence?.facebook} />
             </Section>
 
             <Section title="Offerings">
-              <Field editMode={editMode} onChange={(val) => setData({ ...data!, companyFoundation: { ...data!.companyFoundation, industry: val } })}
+              <Field editMode={editMode} onChange={(val) => setData({ ...data!, offerings: { ...data!.offerings, offeringTypes: val } })}
                 label="Types" value={data?.offerings?.offeringTypes} />
-              <Field editMode={editMode} onChange={(val) => setData({ ...data!, companyFoundation: { ...data!.companyFoundation, industry: val } })}
+              <Field editMode={editMode} onChange={(val) => setData({ ...data!, offerings: { ...data!.offerings, pricing: val.split(', ') } })}
                 label="Pricing" value={data?.offerings?.pricing?.join(', ')} />
             </Section>
           </div>
