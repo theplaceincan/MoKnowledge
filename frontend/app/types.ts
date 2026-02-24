@@ -1,5 +1,7 @@
 export type KnowledgeBase = {
   companyFoundation: {
+    name: string,
+    websiteUrl: string;
     description: string
     industry: string
     businessModel: string
@@ -51,4 +53,12 @@ export type KnowledgeBase = {
     pricing: string[]
     offeringTypes: string
   }
+}
+
+export type KnowledgeBaseRow = {
+  id: string
+  company_name: string
+  website_url: string
+  data: KnowledgeBase
+  created_at: string
 }

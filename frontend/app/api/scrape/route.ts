@@ -1,14 +1,18 @@
 import * as cheerio from 'cheerio'
 import { NextRequest } from 'next/server'
+import { doesUrlExist } from '@/lib/knowledge';
 
 export async function POST(request: Request) {
   const { url } = await request.json()
-
-  // Error handling
+  
+  // Error handling and form validation
   if (!url) return Response.json({ error: "No URL was found" }, { status: 400 });
+  const fullUrl = url.startsWith('http') ? url : `https://${url}`
+  const normalizedUrl = fullUrl.replace(/\/$/, '')
+  if (await doesUrlExist(normalizedUrl)) return Response.json({ error: "URL already exists" }, { status: 409 });
 
   // Scraping the website
-  const res = await fetch(url, {
+  const res = await fetch(normalizedUrl, {
     headers: { 'User-Agent': 'Mozilla/5.0' }
   })
 
@@ -16,9 +20,12 @@ export async function POST(request: Request) {
   const $ = cheerio.load(html)
 
   // -- Company Foundation
+  // Name
+  const name = $('meta[property="og:site_name"]').attr('content') || $('meta[name="application-name"]').attr('content') || $('h1').first().text().trim() || ''
   // Overview / company description
   const description = $('meta[name="description"]').attr("content") || ''
   // Website (url), industry, business model, company role
+  const websiteUrl = normalizedUrl;
   const industry = html.match(/industry[:\s]+([A-Za-z\s]+)/i)?.[1]?.trim() || ''
   const businessModel = html.match(/(?:B2B|B2C|SaaS|C2C|BaaS|C2B)/i)?.[0] || ''
   const companyRole = html.match(/(?:we are a|we're a|a leading|a full-service)\s+([a-zA-Z\s]+company|agency|studio|firm|platform)/i)?.[1]?.trim() || ''
@@ -144,7 +151,7 @@ export async function POST(request: Request) {
 
   return Response.json({
     companyFoundation: {
-      description, industry, businessModel, companyRole,
+      name, websiteUrl, description, industry, businessModel, companyRole,
       founded, entityType, employeeCount,
       mainAddress, otherLocations, alternativeNames
     },

@@ -14,12 +14,12 @@ export default function Navbar() {
               <Image src={'/text.avif'} width={90} height={90} alt="logo" />
             </div>
           </a>
-          <div className="ml-13">
-            <a className="font-semibold text-zinc-500" href={'/knowledge/view'}>Knowledge Base</a>
-          </div>
         </div>
         <div>
-          <DarkModeToggle />
+          <div className="ml-13">
+            <a className="text-zinc-500" href={'/knowledge/view'}>View Base</a>
+          </div>
+          {/* <DarkModeToggle /> */}
         </div>
       </div>
     </div>

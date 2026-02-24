@@ -11,3 +11,8 @@
 input {
   outline: none;
 }
+
+.viewMode {
+  padding: 1px;
+  background-color: gray;
+}
