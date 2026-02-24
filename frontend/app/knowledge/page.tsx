@@ -41,6 +41,8 @@ export default function Knowledge() {
   const [editMode, setEditMode] = useState(false)
   const [completedSave, setCompletedSave] = useState(false)
   const [scraped, isScraped] = useState(false);
+  const [copiedJSON, isCopiedJSON] = useState(false);
+
   const [data, setData] = useState<KnowledgeBase | null>(null);
 
   const [errorMsg, setErrorMsg] = useState("")
@@ -49,6 +51,11 @@ export default function Knowledge() {
   function handleDisplayError(errorMsg: string) {
     setError(true)
     setErrorMsg(errorMsg)
+  }
+
+  function copyJSON() {
+    navigator.clipboard.writeText(JSON.stringify(data, null, 2))
+    isCopiedJSON(true)
   }
 
   // scrape
@@ -149,16 +156,26 @@ export default function Knowledge() {
 
         <div className="w-full mt-5 flex items-center justify-center">
           <div className="w-full border max-w-325 border-zinc-200 rounded-2xl p-6 space-y-6">
-            <div className="space-x-2">
-              {editMode ? (
-                <>
-                  <button onClick={() => cancelEditMode()} className="max-w-200 shadow-md cursor-pointer p-1 px-3 rounded-2xl bg-white text-red-600 hover:bg-red-100 border-2 border-red-600 active:border-red-400 font-semibold">Cancel</button>
-                  <button onClick={() => saveEditedData()} className="max-w-200 shadow-md cursor-pointer p-1 px-3 rounded-2xl bg-white text-green-600 hover:bg-green-100 border-2 border-green-600 active:border-green-400 font-semibold">Save Data</button>
-                </>
-              ) : (
-                <button onClick={() => setEditMode(true)} className="max-w-200 shadow-md cursor-pointer p-1 px-3 rounded-2xl bg-white text-gray-600 hover:bg-gray-100 border-2 border-gray-600 active:border-gray-400 font-semibold">Edit Data</button>
-              )}
+            <div className="flex justify-between">
+              <div className="space-x-2">
+                {editMode ? (
+                  <>
+                    <button onClick={() => cancelEditMode()} className="max-w-200 shadow-md cursor-pointer p-1 px-3 rounded-2xl bg-white text-red-600 hover:bg-red-100 border-2 border-red-600 active:border-red-400 font-semibold">Cancel</button>
+                    <button onClick={() => saveEditedData()} className="max-w-200 shadow-md cursor-pointer p-1 px-3 rounded-2xl bg-white text-green-600 hover:bg-green-100 border-2 border-green-600 active:border-green-400 font-semibold">Save Data</button>
+                  </>
+                ) : (
+                  <button onClick={() => setEditMode(true)} className="max-w-200 shadow-md cursor-pointer p-1 px-3 rounded-2xl bg-white text-gray-600 hover:bg-gray-100 border-2 border-gray-600 active:border-gray-400 font-semibold">Edit Data</button>
+                )}
+              </div>
+              <div>
+                { copiedJSON ? (
+                  <button className="max-w-200 shadow-md cursor-pointer p-1 px-3 rounded-2xl bg-white text-gray-600 hover:bg-gray-100 border-2 border-gray-600 active:border-gray-400 font-semibold">Copied JSON</button>
+                ) : (
+                  <button onClick={() => copyJSON()} className="max-w-200 shadow-md cursor-pointer p-1 px-3 rounded-2xl bg-white text-blue-600 hover:bg-blue-100 border-2 border-blue-600 active:border-blue-400 font-semibold">Copy JSON</button>
+                )}
+              </div>
             </div>
+
             <div>
               <p className="text-2xl font-bold">{data?.companyFoundation?.name}</p>
               <a target="_blank" href={data?.companyFoundation?.websiteUrl} className="text-blue-500 text-sm">{data?.companyFoundation?.websiteUrl}</a>
