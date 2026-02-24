@@ -20,6 +20,7 @@ export default function KnowledgeView() {
   const [viewMode, setViewMode] = useState<viewModes>("card")
   const [selected, setSelected] = useState<KnowledgeBaseRow | null>(null)
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<"name" | "industry" | null>(null)
 
   // Getting data
   useEffect(() => {
@@ -59,9 +60,22 @@ export default function KnowledgeView() {
   }
 
   // Sorting and Filtering
-  const filtered = data.filter(e =>
-    e.data?.companyFoundation?.name?.toLowerCase().includes(search.toLowerCase()) ||
-    e.data?.companyFoundation?.websiteUrl?.toLowerCase().includes(search.toLowerCase())
+
+  const filtered = data.filter(e => {
+    // e.data?.companyFoundation?.name?.toLowerCase().includes(search.toLowerCase()) ||
+    // e.data?.companyFoundation?.websiteUrl?.toLowerCase().includes(search.toLowerCase())
+    const name = e.data?.companyFoundation?.name?.toLowerCase() || ""
+    const website = e.data?.companyFoundation?.websiteUrl?.toLowerCase() || ""
+    const industry = e.data?.companyFoundation?.industry?.toLowerCase() || ""
+    const loweredSearch = search.toLowerCase()
+
+    const matchesSearch = name.includes(loweredSearch) || website.includes(loweredSearch) || industry.includes(loweredSearch)
+    if (!activeFilter) return matchesSearch
+    if (activeFilter === "name") return name.includes(loweredSearch)
+    if (activeFilter === "industry") return industry.includes(loweredSearch)
+
+    return matchesSearch
+  }
   ).sort((a, b) => {
     const nameA = a.data?.companyFoundation?.name || ''
     const nameB = b.data?.companyFoundation?.name || ''
@@ -129,7 +143,10 @@ export default function KnowledgeView() {
                     <li key={i}>
                       <a
                         href={'#'}
-                        onClick={() => setOpenFilterMenu(false)}
+                        onClick={() => {
+                          setActiveFilter(e as "name" | "industry")
+                          setOpenFilterMenu(false)
+                        }}
                         className="block px-4 py-2 text-sm text-zinc-600 hover:bg-zinc-50"
                       >
                         {e}
@@ -156,6 +173,22 @@ export default function KnowledgeView() {
             </button>
           </div>
         </div>
+
+        {activeFilter && (
+          <div className="w-full flex items-center justify-center">
+            <div className="w-full max-w-250">
+              <p className="mt-5 w-full max-w-250 text-xs text-zinc-500">
+                Filtering by: <span className="font-medium">{activeFilter}</span>
+                <button
+    onClick={() => setActiveFilter(null)}
+    className="text-sm p-1 px-3 ml-2 rounded-xl bg-red-50 text-red-500 cursor-pointer"
+  >
+    X
+  </button>
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Data display  */}
         <div className="mt-5" />

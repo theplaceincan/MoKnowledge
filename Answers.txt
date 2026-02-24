@@ -1,8 +1,8 @@
 1. What approach did you take to scraping and structuring the knowledge base data?
 
 I used Cheerio to scrap a given valid and existing URL, which returned 
-the websites data as a JSON. Each variable in a new JSON is filled by using regex on
-common words and symbols relating to each variable of the original data JSON. Afterwards,
+the websites data as HTML. Each variable in a new JSON is filled by using regex on
+common words and symbols relating to each variable of the original data/HTML. Afterwards,
 the new JSON is returned as the knowledge base data.
 
 ----------
